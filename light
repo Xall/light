@@ -1,0 +1,30 @@
+import Tkinter
+import optparse
+import sys
+
+# Method, expecting an int to set brightness
+def setLights(power):
+	f = open('/sys/class/backlight/acpi_video0/brightness', 'w')
+	f.write(str(power))
+	return
+
+# Callback for UI Scale Widget
+def callback(event):
+	setLights(w_scale.get())
+	return
+
+# CLI Option Parser
+p = optparse.OptionParser()
+p.add_option('--power', '-p')
+options, arguments = p.parse_args()
+if options.power:
+	setLights(options.power)
+	sys.exit()
+
+# User Interface
+root = Tkinter.Tk()
+w_scale = Tkinter.Scale(root, from_=0, to=7)
+w_scale.bind("<ButtonRelease-1>", callback)
+w_scale.pack()
+
+root.mainloop()
